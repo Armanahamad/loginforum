@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>_0886 Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 50px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px #0ff, 0 0 60px #00f, 0 0 90px #0ff;
+      width: 320px;
+      text-align: center;
+      margin: auto;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: fadeInUp 1.5s forwards, pulse 2s infinite alternate;
+      backdrop-filter: blur(8px);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(-100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-50%);
+      }
+    }
+
+    @keyframes pulse {
+      from {
+        box-shadow: 0 0 30px #0ff;
+      }
+      to {
+        box-shadow: 0 0 50px #00f;
+      }
+    }
+
+    h1 {
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      margin-bottom: 20px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 20px 0;
+      border: none;
+      border-radius: 8px;
+      background: #111;
+      color: #0ff;
+      font-size: 16px;
+      outline: none;
+      box-shadow: 0 0 10px #0ff;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #0ff, 0 0 25px #00f;
+    }
+
+    .btn {
+      background-color: #00f;
+      color: white;
+      padding: 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-weight: bold;
+      box-shadow: 0 0 15px #0ff;
+    }
+
+    .btn:hover {
+      background-color: #0ff;
+      color: #000;
+      box-shadow: 0 0 20px #0ff, 0 0 30px #00f;
+      transform: scale(1.05);
+    }
+
+    .btn.warning {
+      background-color: red;
+      box-shadow: 0 0 20px red;
+    }
+
+    .btn.success {
+      background-color: limegreen;
+      box-shadow: 0 0 20px limegreen;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: #0ff;
+      z-index: 11;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="container">
+    <h1>_0886 Form</h1>
+    <input type="text" id="username" placeholder="Enter Username">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button class="btn" id="submitBtn">Submit</button>
+  </div>
+
+  <div class="footer">
+    Need help? Call: 01125532525 | Email: bakchod@gmail.com | Report Issues: Just shout loudly, it might help.<br>
+    (Or sacrifice 3 cookies to the code gods. We don’t know either.)
+  </div>
+
+  <audio id="clickSound" src="https://www.fesliyanstudios.com/play-mp3/696"></audio>
+  <audio id="typeSound" src="https://www.fesliyanstudios.com/play-mp3/696" preload="auto"></audio>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = '01';
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+
+    for (let x = 0; x < columns; x++) {
+      drops[x] = 1;
+    }
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0f0';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    setInterval(draw, 35);
+
+    const btn = document.getElementById('submitBtn');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const clickSound = document.getElementById('clickSound');
+    const typeSound = document.getElementById('typeSound');
+
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('keypress', () => {
+        typeSound.currentTime = 0;
+        typeSound.play();
+      });
+    });
+
+    btn.addEventListener('mouseover', function () {
+      if (username.value.trim() === '' || password.value.trim() === '') {
+        btn.textContent = 'BC* Pehle Data Fill Kar';
+        btn.classList.add('warning');
+        let maxX = 250;
+        let maxY = 150;
+        btn.style.position = 'absolute';
+        btn.style.left = Math.random() * maxX + 'px';
+        btn.style.top = Math.random() * maxY + 'px';
+      }
+    });
+
+    document.addEventListener('input', function () {
+      if (username.value.trim() !== '' && password.value.trim() !== '') {
+        btn.textContent = 'Haa ab Submit kar';
+        btn.classList.remove('warning');
+        btn.classList.add('success');
+        btn.style.position = 'static';
+        btn.style.transform = 'scale(1.1)';
+      } else {
+        btn.textContent = 'BC* Pehle Data Fill Kar';
+        btn.classList.add('warning');
+      }
+    });
+
+    btn.addEventListener('click', () => {
+      clickSound.play();
+    });
+  </script>
+</body>
+</html>
